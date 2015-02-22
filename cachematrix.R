@@ -1,15 +1,75 @@
-## Put comments here that give an overall description of what your
-## functions do
+# Write an R function that is able to cache potentially time-consuming computations. 
+#Take advantage of the scoping rules of the R language and how they can be manipulated 
+#to preserve state inside of an R object.
 
-## Write a short comment describing this function
+#       Example: Caching the Mean of a Vector
+
+#       In this example we introduce the <<- operator which can be used to assign a value 
+#       to an object in an environment that is different from the current environment. 
+#       Below are two functions that are used to create a special object that stores a numeric 
+#       vector and caches its mean.
+
+#       The first function, makeVector creates a special "vector", which is really a list containing a function to
+
+#       a) set the value of the vector
+#       b) get the value of the vector
+#       c) set the value of the mean
+#       d) get the value of the mean
+
+#makeVector <- function(x = numeric()) {
+#        m <- NULL
+#        set <- function(y) {
+#                x <<- y
+#                m <<- NULL
+#        }
+#        get <- function() x
+#        setmean <- function(mean) m <<- mean
+#        getmean <- function() m
+#        list(set = set, get = get,
+#             setmean = setmean,
+#             getmean = getmean)
+#}
+
+#       The following function calculates the mean of the special "vector" created with the above function. 
+#       However, it first checks to see if the mean has already been calculated. If so, it gets the mean 
+#       from the cache and skips the computation. Otherwise, it calculates the mean of the data and sets 
+#       the value of the mean in the cache via the setmean function.
+
+#cachemean <- function(x, ...) {
+#        m <- x$getmean()
+#        if(!is.null(m)) {
+#                message("getting cached data")
+#                return(m)
+#        }
+#        data <- x$get()
+#        m <- mean(data, ...)
+#        x$setmean(m)
+#        m
+#}
 
 makeCacheMatrix <- function(x = matrix()) {
-
+        final_matrix <- NULL
+        set <- function(y) {
+                x <<- y
+                final_matrix <<- NULL
+        }
+        get <- function() x
+        setinverse <- function(inverse) final_matrix <<- inverse
+        getinverse <- function() final_matrix
+        list(set = set, get = get,
+             setinverse = setinverse,
+             getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
-
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+        final_matrix <- x$getinverse()
+        if(!is.null(final_matrix)) {
+                message("getting cached data")
+                return(final_matrix)
+        }
+        data <- x$get()
+        final_matrix <- solve(data)
+        x$setinverse(final_matrix)
+        final_matrix
 }
