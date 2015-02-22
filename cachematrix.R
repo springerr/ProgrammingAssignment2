@@ -48,11 +48,14 @@
 #}
 
 makeCacheMatrix <- function(x = matrix()) {
+        ## create initial matix with value of NULL
         final_matrix <- NULL
+        ## create funtion that creates the first occurance of the matrix or updates the matrix if a change occurs
         set <- function(y) {
                 x <<- y
                 final_matrix <<- NULL
         }
+        ## get/ calculate the inverse of he matirx and pass the value of the function
         get <- function() x
         setinverse <- function(inverse) final_matrix <<- inverse
         getinverse <- function() final_matrix
@@ -61,13 +64,15 @@ makeCacheMatrix <- function(x = matrix()) {
              getinverse = getinverse)
 }
 
-
+## get the cache required
 cacheSolve <- function(x, ...) {
         final_matrix <- x$getinverse()
+        ## if the cache exists retrieve it
         if(!is.null(final_matrix)) {
                 message("getting cached data")
                 return(final_matrix)
         }
+        ## if the inverse doesn't exist calculate it
         data <- x$get()
         final_matrix <- solve(data)
         x$setinverse(final_matrix)
